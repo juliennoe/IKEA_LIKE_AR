@@ -95,12 +95,12 @@
       }
     },
     "com.unity.xr.arcore": {
-      "version": "4.0.12",
+      "version": "4.1.0-preview.2",
       "depth": 0,
       "source": "registry",
       "dependencies": {
-        "com.unity.xr.arsubsystems": "4.0.12",
-        "com.unity.xr.management": "4.0.1",
+        "com.unity.xr.arsubsystems": "4.1.0-preview.2",
+        "com.unity.xr.management": "3.2.10",
         "com.unity.modules.androidjni": "1.0.0"
       },
       "url": "https://packages.unity.com"
@@ -126,7 +126,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.xr.arsubsystems": {
-      "version": "4.0.12",
+      "version": "4.1.0-preview.2",
       "depth": 1,
       "source": "registry",
       "dependencies": {

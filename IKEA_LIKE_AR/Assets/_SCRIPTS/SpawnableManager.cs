@@ -7,33 +7,37 @@ using UnityEngine.EventSystems;
 
 public class SpawnableManager : MonoBehaviour
 {
+    [Header("TEXTE INDIQUANT LES ETATS DE L'APPLICATION")]
     [SerializeField] // texte de debug
     private Text m_text; 
-     
+    
+    [Header("SET L'ARCAMERA POUR POUVOIR ENVOYER DES RAYONS")]
     [SerializeField] // recuperation de l'ARCamera
     private Camera m_arCamera;
 
+    [Header("GLISSER LE AR RAYCAST MANAGER SUR l'AR SESSION ORIGIN")]
     [SerializeField] // recuperation de l'ARRaycastManager
     private ARRaycastManager m_raycastManger;
     
-    [SerializeField] // Stockage des points d'impacts
-    private List<ARRaycastHit> m_hits = new List<ARRaycastHit>();
-
-    [SerializeField] // Stockage des prefabs instantié dans la scene
-    private List<GameObject> m_placedPrefabList = new List<GameObject>();
-    
-    [SerializeField] // Prefab actuellement selectionné
+    [Header("OBJET ACTUELLEMENT INSTANTIE")]
+    [SerializeField] // Prefab actuellement selectionnï¿½
     private GameObject m_spawnablePrefab;
     
-    [SerializeField] // prefab actuellement instantié
+    [Header("OBJET ACTUELLEMENT UTILISE")]
+    [SerializeField] // prefab actuellement instantiï¿½
     private GameObject m_spawnedObject;
 
+    [Header("NOMBRE MAXIMUM D'OBJETS DEPOSABLE DANS LA SCENE")]
     [SerializeField] // nombre maximum d'objet dans la scene
     private int m_maxPrefabSpawnCount = 0;
 
-    [SerializeField] // compteur du nombre d'objets dans la scene
+    // compteur du nombre d'objets dans la scene
     private int m_placedPrefabCount;
-
+        
+    // Stockage des points d'impacts
+    private List<ARRaycastHit> m_hits = new List<ARRaycastHit>();
+   // Stockage des prefabs instantiï¿½ dans la scene
+    private List<GameObject> m_placedPrefabList = new List<GameObject>();
     // Activation et desactivation du raycast sur les objets
     public static bool m_switchRaycast;
     public static bool m_switchDestroyOrCreate;
@@ -47,7 +51,7 @@ public class SpawnableManager : MonoBehaviour
         m_arCamera = GameObject.Find("ARCamera").GetComponent<Camera>();
     }
 
-    // fonction update ou se gère le rayon
+    // fonction update ou se gï¿½re le rayon
     void Update()
     {
         // si le boolean du raycast est vrai, alors j'instancie un Gameobject
@@ -61,29 +65,29 @@ public class SpawnableManager : MonoBehaviour
         }
     }
 
-    // si mon rayon tombe sur le plan et qu'il ne tombe pas sur un objet "Spawnable" il en créer un
+    // si mon rayon tombe sur le plan et qu'il ne tombe pas sur un objet "Spawnable" il en crï¿½er un
     private void InstantiateGameObject()
     {
         RaycastHit m_hit;
         Ray m_ray = m_arCamera.ScreenPointToRay(Input.GetTouch(0).position);
         
-        // si je touche l'écran j'envoi un rayon sur le sol
+        // si je touche l'ï¿½cran j'envoi un rayon sur le sol
         if (m_raycastManger.Raycast(Input.GetTouch(0).position, m_hits))
         {
-            // si je suis au début du touch et que mon prefab est vide
+            // si je suis au dï¿½but du touch et que mon prefab est vide
             if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began && m_spawnedObject == null)
             {
                 // si je ne touche pas de l'UI...
                 if (!EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId))
                 {
-                    // si je touche un objet existant, je peux le déplacer
+                    // si je touche un objet existant, je peux le dï¿½placer
                     if (Physics.Raycast(m_ray, out m_hit))
                     {
                         if (m_hit.collider.gameObject.CompareTag("Spawnable"))
                         {
                             m_spawnedObject = m_hit.collider.gameObject;
                         }
-                        // sinon si je ne touche pas de prefab, je créer un prefab à l'endroit de l'impact (si le compteur est inferieur à la valeur donnée)
+                        // sinon si je ne touche pas de prefab, je crï¿½er un prefab ï¿½ l'endroit de l'impact (si le compteur est inferieur ï¿½ la valeur donnï¿½e)
                         else if (m_placedPrefabCount < m_maxPrefabSpawnCount)
                         {
                             SpawnPrefab(m_hits[0].pose.position);
@@ -96,7 +100,7 @@ public class SpawnableManager : MonoBehaviour
                 }
             }
 
-            // sinon si je touch l'écran et que ma variable prefab n'est pas nulle, je déplace l'objet legerement au dessus du sol
+            // sinon si je touch l'ï¿½cran et que ma variable prefab n'est pas nulle, je dï¿½place l'objet legerement au dessus du sol
             else if (Input.GetTouch(0).phase == TouchPhase.Moved && m_spawnedObject != null)
             {
                 m_spawnedObject.transform.position = m_hits[0].pose.position;
@@ -104,7 +108,7 @@ public class SpawnableManager : MonoBehaviour
 
             }
 
-            // si je fini de toucher l'écran, j'abaisse mon prefab sur le plan et la variable prefab est vidée
+            // si je fini de toucher l'ï¿½cran, j'abaisse mon prefab sur le plan et la variable prefab est vidï¿½e
             if (Input.GetTouch(0).phase == TouchPhase.Ended)
             {
                 m_spawnedObject.transform.position = m_hits[0].pose.position;
@@ -114,22 +118,22 @@ public class SpawnableManager : MonoBehaviour
         }
     }
 
-    // je detruis les objets lorsque que je tombe sur un raycast taggué "Spawnable"
+    // je detruis les objets lorsque que je tombe sur un raycast tagguï¿½ "Spawnable"
     private void DestroyGameObject()
     {
         RaycastHit m_hit;
         Ray m_ray = m_arCamera.ScreenPointToRay(Input.GetTouch(0).position);
 
-        // si je touche l'écran j'envoi un rayon sur le sol
+        // si je touche l'ï¿½cran j'envoi un rayon sur le sol
         if (m_raycastManger.Raycast(Input.GetTouch(0).position, m_hits))
         {
-            // si je suis au début du touch et que mon prefab est vide
+            // si je suis au dï¿½but du touch et que mon prefab est vide
             if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began && m_spawnedObject == null)
             {
                 // si je ne touche pas de l'UI...
                 if (!EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId))
                 {
-                    // si je touche un objet existant, je peux le déplacer
+                    // si je touche un objet existant, je peux le dï¿½placer
                     if (Physics.Raycast(m_ray, out m_hit))
                     {
                         if (m_hit.collider.gameObject.CompareTag("Spawnable"))
@@ -157,7 +161,7 @@ public class SpawnableManager : MonoBehaviour
         m_placedPrefabCount++;
     }
 
-    // fonction permettant de définir quel objet je souhaites instancier
+    // fonction permettant de dï¿½finir quel objet je souhaites instancier
     public void SwitchArPrefab(GameObject _prefabType)
     {
         m_spawnablePrefab = _prefabType;
